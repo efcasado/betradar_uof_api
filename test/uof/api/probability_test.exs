@@ -3,9 +3,9 @@ defmodule UOF.API.Probability.Test do
   use Mimic
 
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn schema, _endpoint ->
+    stub(UOF.API.Utils.HTTP, :get, fn _endpoint ->
       data = File.read!("test/data/cashout.xml")
-      UOF.Schemas.XML.decode(data, schema)
+      UOF.Schemas.XML.decode(data)
     end)
 
     :ok
