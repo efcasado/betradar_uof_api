@@ -11,6 +11,13 @@
 * document usage of conventional commits ([6de2680](https://github.com/efcasado/uof_api/commit/6de2680f03382813fd13c9cf078062c4c43b5aaf))
 * remove logo ([3904612](https://github.com/efcasado/uof_api/commit/3904612b8d5850b0d337b8d221423e2319e99a4a))
 
+## [2.1.1](https://github.com/efcasado/betradar_uof_api/compare/v2.1.0...v2.1.1) (2026-07-04)
+
+
+### Bug Fixes
+
+* data loss due to polymorphic responses ([#50](https://github.com/efcasado/betradar_uof_api/issues/50)) ([c81e166](https://github.com/efcasado/betradar_uof_api/commit/c81e1665ade840ab35f3b11fd99d475e89d164ac))
+
 ## [2.1.0](https://github.com/efcasado/betradar_uof_api/compare/v2.0.0...v2.1.0) (2026-06-24)
 
 
