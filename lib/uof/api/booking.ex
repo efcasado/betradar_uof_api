@@ -11,7 +11,6 @@ defmodule UOF.API.Booking do
   `liveodds` helpers in `UOF.API.Sports.Fixtures` (e.g.
   `UOF.API.Sports.Fixtures.bookable/1`).
   """
-  alias UOF.Schemas.Common.Response
   alias UOF.API.Utils.HTTP
 
   @doc """
@@ -19,6 +18,6 @@ defmodule UOF.API.Booking do
   """
   def book(sport_event) do
     endpoint = ["liveodds", "booking-calendar", "events", sport_event, "book"]
-    HTTP.post(Response, endpoint)
+    HTTP.post(endpoint)
   end
 end

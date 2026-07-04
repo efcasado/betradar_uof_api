@@ -1,16 +1,16 @@
 defmodule UOF.API.Utils.HTTP do
   @moduledoc false
 
-  def get(schema, path, params \\ []) do
+  def get(path, params \\ []) do
     client()
     |> Req.get!(url: Enum.join(path, "/"), params: params)
-    |> decode(schema)
+    |> decode()
   end
 
-  def post(schema, path, body \\ "", params \\ []) do
+  def post(path, body \\ "", params \\ []) do
     client()
     |> Req.post!(url: Enum.join(path, "/"), params: params, body: body)
-    |> decode(schema)
+    |> decode()
   end
 
   defp client do
@@ -24,5 +24,9 @@ defmodule UOF.API.Utils.HTTP do
     )
   end
 
-  defp decode(%Req.Response{body: body}, schema), do: UOF.Schemas.XML.decode(body, schema)
+  # Every endpoint is polymorphic on its XML root element (a season request to the
+  # fixture endpoint returns <tournament_info>, any endpoint may return the shared
+  # <response> error envelope), so dispatch on the root via decode/1 rather than
+  # asserting a fixed schema.
+  defp decode(%Req.Response{body: body}), do: UOF.Schemas.XML.decode(body)
 end

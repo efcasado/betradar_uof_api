@@ -3,9 +3,14 @@ defmodule UOF.API.Sports.Test do
   use Mimic
 
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn schema, endpoint ->
+    stub(UOF.API.Utils.HTTP, :get, fn endpoint ->
       {:ok, data} = fetch_mock_data(endpoint)
-      UOF.Schemas.XML.decode(data, schema)
+      UOF.Schemas.XML.decode(data)
+    end)
+
+    stub(UOF.API.Utils.HTTP, :get, fn endpoint, _params ->
+      {:ok, data} = fetch_mock_data(endpoint)
+      UOF.Schemas.XML.decode(data)
     end)
 
     :ok
@@ -145,6 +150,21 @@ defmodule UOF.API.Sports.Test do
     assert reference.value == "11428313"
   end
 
+  # The fixture endpoint is polymorphic: querying a season/tournament id returns
+  # a <tournament_info> document rather than <fixtures_fixture>. Dispatching on
+  # the root element must surface it as a TournamentInfoEndpoint instead of a
+  # hollow FixturesEndpoint.
+  test "fixture/2 on a season id returns the tournament_info document" do
+    stub(UOF.API.Utils.HTTP, :get, fn ["sports", _lang, "sport_events", _id, "fixture.xml"] ->
+      UOF.Schemas.XML.decode(File.read!("test/data/tournament_info.xml"))
+    end)
+
+    assert {:ok, %UOF.Schemas.API.Sports.TournamentInfoEndpoint{} = info} =
+             UOF.API.Sports.fixture("sr:season:101177")
+
+    assert info.tournament.id == "sr:tournament:7"
+  end
+
   test "can parse UOF.API.Sports.fixture_changes/{0, 1} response" do
     {:ok, data} = UOF.API.Sports.fixture_changes()
 
@@ -168,9 +188,9 @@ defmodule UOF.API.Sports.Test do
   test "stream/0 paginates the prematch schedule and aggregates events" do
     page = File.read!("test/data/schedule.xml")
 
-    stub(UOF.API.Utils.HTTP, :get, fn schema, _endpoint, params ->
+    stub(UOF.API.Utils.HTTP, :get, fn _endpoint, params ->
       data = if Keyword.get(params, :start, 0) == 0, do: page, else: "<schedule/>"
-      UOF.Schemas.XML.decode(data, schema)
+      UOF.Schemas.XML.decode(data)
     end)
 
     events = UOF.API.Sports.Fixtures.stream() |> Enum.to_list()

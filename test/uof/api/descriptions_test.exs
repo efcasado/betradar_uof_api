@@ -3,9 +3,9 @@ defmodule UOF.API.Descriptions.Test do
   use Mimic
 
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn schema, endpoint ->
+    stub(UOF.API.Utils.HTTP, :get, fn endpoint ->
       data = File.read!("test/data/" <> Enum.at(endpoint, -1))
-      UOF.Schemas.XML.decode(data, schema)
+      UOF.Schemas.XML.decode(data)
     end)
 
     :ok

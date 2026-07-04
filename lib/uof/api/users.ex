@@ -11,6 +11,6 @@ defmodule UOF.API.Users do
   def whoami do
     endpoint = ["users", "whoami.xml"]
 
-    HTTP.get(UOF.Schemas.API.Users.BookmakerDetails, endpoint)
+    HTTP.get(endpoint)
   end
 end

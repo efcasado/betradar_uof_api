@@ -14,7 +14,6 @@ defmodule UOF.API.Recovery do
     * `:node_id` — target a specific feed node
     * `:after` — only on `recover/2`; milliseconds since the Unix epoch (UTC)
   """
-  alias UOF.Schemas.Common.Response
   alias UOF.API.Utils.HTTP
 
   @doc """
@@ -25,7 +24,7 @@ defmodule UOF.API.Recovery do
   """
   def recover(product, opts \\ []) do
     endpoint = [product, "recovery", "initiate_request"]
-    HTTP.post(Response, endpoint, "", Keyword.take(opts, [:after, :request_id, :node_id]))
+    HTTP.post(endpoint, "", Keyword.take(opts, [:after, :request_id, :node_id]))
   end
 
   @doc """
@@ -33,7 +32,7 @@ defmodule UOF.API.Recovery do
   """
   def recover_event(product, sport_event, opts \\ []) do
     endpoint = [product, "odds", "events", sport_event, "initiate_request"]
-    HTTP.post(Response, endpoint, "", Keyword.take(opts, [:request_id, :node_id]))
+    HTTP.post(endpoint, "", Keyword.take(opts, [:request_id, :node_id]))
   end
 
   @doc """
@@ -42,6 +41,6 @@ defmodule UOF.API.Recovery do
   """
   def recover_stateful_messages(product, sport_event, opts \\ []) do
     endpoint = [product, "stateful_messages", "events", sport_event, "initiate_request"]
-    HTTP.post(Response, endpoint, "", Keyword.take(opts, [:request_id, :node_id]))
+    HTTP.post(endpoint, "", Keyword.take(opts, [:request_id, :node_id]))
   end
 end

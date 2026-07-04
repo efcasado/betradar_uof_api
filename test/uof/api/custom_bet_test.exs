@@ -3,14 +3,14 @@ defmodule UOF.API.CustomBet.Test do
   use Mimic
 
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn schema, _endpoint ->
+    stub(UOF.API.Utils.HTTP, :get, fn _endpoint ->
       data = File.read!("test/data/available_selections.xml")
-      UOF.Schemas.XML.decode(data, schema)
+      UOF.Schemas.XML.decode(data)
     end)
 
-    stub(UOF.API.Utils.HTTP, :post, fn schema, _endpoint, _body ->
+    stub(UOF.API.Utils.HTTP, :post, fn _endpoint, _body ->
       data = File.read!("test/data/custombet_calculation.xml")
-      UOF.Schemas.XML.decode(data, schema)
+      UOF.Schemas.XML.decode(data)
     end)
 
     :ok

@@ -18,7 +18,7 @@ defmodule UOF.API.Probability do
   """
   def probabilities(fixture) do
     endpoint = ["probabilities", fixture]
-    HTTP.get(UOF.Schemas.API.Probability.Cashout, endpoint)
+    HTTP.get(endpoint)
   end
 
   @doc """
@@ -26,7 +26,7 @@ defmodule UOF.API.Probability do
   """
   def probabilities(fixture, market) do
     endpoint = ["probabilities", fixture, market]
-    HTTP.get(UOF.Schemas.API.Probability.Cashout, endpoint)
+    HTTP.get(endpoint)
   end
 
   @doc """
@@ -34,6 +34,6 @@ defmodule UOF.API.Probability do
   """
   def probabilities(fixture, market, specifier) do
     endpoint = ["probabilities", fixture, market, specifier]
-    HTTP.get(UOF.Schemas.API.Probability.Cashout, endpoint)
+    HTTP.get(endpoint)
   end
 end
