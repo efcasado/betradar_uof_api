@@ -10,6 +10,8 @@ defmodule UOF.API.Probability do
 
   For a fixture to be available in the Probability API, the fixture must be
   active in `Live Odds` and you must have `Live Odds` access to this fixture.
+
+  Functions return `{:ok, response} | {:error, UOF.API.Error.t()}`.
   """
   alias UOF.API.Utils.HTTP
 

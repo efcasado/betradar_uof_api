@@ -7,7 +7,7 @@ defmodule UOF.API.Sports do
   sport-event summaries and timelines, the sport/category/tournament/season
   catalogue, and player/competitor/venue profiles.
 
-  Every function returns `{:ok, struct} | {:error, Ecto.Changeset.t()}`, where
+  Every function returns `{:ok, struct} | {:error, UOF.API.Error.t()}`, where
   the struct is an `UOF.Schemas.API.Sports.*` embedded schema, and takes an
   optional `lang` (ISO code, default `"en"`).
 

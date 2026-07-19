@@ -7,7 +7,7 @@ defmodule UOF.API.Descriptions do
   match statuses and betting statuses used in `odds_change` messages, betstop
   reasons, and void reasons used in `bet_settlement` messages.
 
-  Every function returns `{:ok, struct} | {:error, Ecto.Changeset.t()}`, where
+  Every function returns `{:ok, struct} | {:error, UOF.API.Error.t()}`, where
   the struct is an `UOF.Schemas.API.Descriptions.*` embedded schema. Endpoints
   that vary by language take an optional `lang` (ISO code, default `"en"`).
   """

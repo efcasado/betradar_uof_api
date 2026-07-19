@@ -1,6 +1,8 @@
 defmodule UOF.API.Users do
   @moduledoc """
   API used for administrative purposes.
+
+  Functions return `{:ok, response} | {:error, UOF.API.Error.t()}`.
   """
   alias UOF.API.Utils.HTTP
 

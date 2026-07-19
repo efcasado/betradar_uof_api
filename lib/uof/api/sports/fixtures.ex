@@ -17,6 +17,8 @@ defmodule UOF.API.Sports.Fixtures do
   `Stream`/`Enum` and supports early termination:
 
       Sports.Fixtures.stream() |> Stream.map(& &1.id) |> Enum.take(50)
+
+  API errors are raised when the stream is enumerated.
   """
   def stream(lang \\ "en") do
     Stream.resource(
@@ -25,6 +27,7 @@ defmodule UOF.API.Sports.Fixtures do
         case Sports.pre_schedule(start, @page_size, lang) do
           {:ok, %{sport_event: []}} -> {:halt, start}
           {:ok, %{sport_event: events}} -> {events, start + @page_size}
+          {:error, error} -> raise error
         end
       end,
       fn _ -> :ok end

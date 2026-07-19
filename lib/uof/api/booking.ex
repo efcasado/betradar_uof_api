@@ -5,6 +5,8 @@ defmodule UOF.API.Booking do
   Booking makes a sport event available for live odds. The HTTP response is only
   an acknowledgement (`UOF.Schemas.Common.Response`).
 
+  Functions return `{:ok, response} | {:error, UOF.API.Error.t()}`.
+
   There are no GET endpoints for the booking calendar — booking state is exposed
   on schedule responses via the `liveodds` attribute (`"booked"`, `"bookable"`,
   `"buyable"`, `"not_available"`). Filter a schedule by that state with the
