@@ -151,6 +151,29 @@ defmodule UOF.API.Sports.Test do
     assert reference.value == "11428313"
   end
 
+  # C-Odds (producer 14, "Competition Odds") sport events use a "codds:"
+  # prefixed id instead of the usual sr:match/sr:stage urn, but the fixture
+  # endpoint accepts it as-is (id is just interpolated into the path) and
+  # returns a regular fixtures_fixture document, so no special handling is
+  # needed on the client side.
+  test "fixture/2 accepts a codds: id and decodes it like any other fixture" do
+    stub(HTTP, :get, fn ["sports", _lang, "sport_events", id, "fixture.xml"], _params, _opts ->
+      assert id == "codds:competition_group:77739"
+      XML.decode(File.read!("test/data/codds_fixture.xml"))
+    end)
+
+    {:ok, ff} = Sports.fixture("codds:competition_group:77739")
+
+    fixture = ff.fixture
+    assert fixture.id == "codds:competition_group:77739"
+    assert fixture.type == "child"
+    assert fixture.stage_type == "competition_group"
+    assert fixture.parent.id == "sr:stage:1189639"
+    assert fixture.parent.stage_type == "round"
+    assert fixture.tournament.id == "sr:stage:1117573"
+    assert fixture.tournament.sport.name == "Golf"
+  end
+
   # The fixture endpoint is polymorphic: querying a season/tournament id returns
   # a <tournament_info> document rather than <fixtures_fixture>. Dispatching on
   # the root element must surface it as a TournamentInfoEndpoint instead of a
