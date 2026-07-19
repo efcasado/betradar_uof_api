@@ -3,11 +3,13 @@ defmodule UOF.API.Descriptions.Test do
   use Mimic
 
   alias UOF.API.Descriptions
+  alias UOF.API.Utils.HTTP
+  alias UOF.Schemas.XML
 
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn endpoint, _params, _opts ->
+    stub(HTTP, :get, fn endpoint, _params, _opts ->
       data = File.read!("test/data/" <> Enum.at(endpoint, -1))
-      UOF.Schemas.XML.decode(data)
+      XML.decode(data)
     end)
 
     :ok
@@ -23,6 +25,16 @@ defmodule UOF.API.Descriptions.Test do
     assert market.name == "Innings 1 to 5th top - {$competitor1} total"
     assert market.groups == "all|score|4.5_innings"
     assert Enum.map(market.outcomes.outcome, & &1.id) == ["13", "12"]
+  end
+
+  test "markets/2 passes include_mappings through as a query param" do
+    expect(HTTP, :get, fn endpoint, params, _opts ->
+      data = File.read!("test/data/" <> Enum.at(endpoint, -1))
+      assert params == [include_mappings: true]
+      XML.decode(data)
+    end)
+
+    Descriptions.markets("en", true)
   end
 
   test "can parse UOF.API.Descriptions.match_statuses/{0, 1} response" do

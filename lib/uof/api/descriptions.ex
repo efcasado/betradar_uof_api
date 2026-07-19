@@ -17,12 +17,14 @@ defmodule UOF.API.Descriptions do
 
   @doc """
   Describe all currently available markets.
+
+  Pass `include_mappings: true` to also include each market's mappings to
+  provider-specific market/outcome ids.
   """
-  def markets(lang \\ "en", opts \\ []) do
-    # TO-DO: Optional mappings
+  def markets(lang \\ "en", include_mappings \\ false, opts \\ []) do
     endpoint = ["descriptions", lang, "markets.xml"]
 
-    HTTP.get(endpoint, [], opts)
+    HTTP.get(endpoint, [include_mappings: include_mappings], opts)
   end
 
   @doc """
