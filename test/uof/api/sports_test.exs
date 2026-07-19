@@ -372,6 +372,30 @@ defmodule UOF.API.Sports.Test do
            ]
   end
 
+  # The summary endpoint is polymorphic like fixture.xml: a race/stage-shaped
+  # sport event (e.g. a codds: id) returns a <race_summary> document rather
+  # than <match_summary>, and must decode into StageSummaryEndpoint instead of
+  # a hollow MatchSummaryEndpoint.
+  test "summary/2 on a codds: id returns the race_summary document" do
+    stub(HTTP, :get, fn ["sports", _lang, "sport_events", id, "summary.xml"], _params, _opts ->
+      assert id == "codds:competition_group:1"
+      XML.decode(File.read!("test/data/race_summary.xml"))
+    end)
+
+    assert {:ok, %UOF.Schemas.API.Sports.StageSummaryEndpoint{} = summary} =
+             Sports.summary("codds:competition_group:1")
+
+    assert summary.sport_event.id == "codds:competition_group:1"
+    assert summary.sport_event.stage_type == "competition_group"
+    assert summary.sport_event.parent.stage_type == "round"
+    assert summary.sport_event_status.status == "ended"
+    assert summary.sport_event_status.winner_id == "sr:competitor:1"
+
+    [competitor] = summary.sport_event_status.results.competitor
+    assert competitor.position == 1
+    assert Enum.count(competitor.result) == 2
+  end
+
   test "can parse UOF.API.Sports.timeline/{1, 2} response" do
     {:ok, timeline} = Sports.timeline("sr:match:42308595")
 
