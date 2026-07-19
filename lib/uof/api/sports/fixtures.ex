@@ -40,7 +40,7 @@ defmodule UOF.API.Sports.Fixtures do
   def by_sport(sports, lang \\ "en")
 
   def by_sport(sports, lang) when is_list(sports) do
-    stream(lang) |> Stream.filter(&(&1.tournament.sport.name in sports))
+    lang |> stream() |> Stream.filter(&(&1.tournament.sport.name in sports))
   end
 
   def by_sport(sport, lang), do: by_sport([sport], lang)

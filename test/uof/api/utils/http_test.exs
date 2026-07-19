@@ -44,8 +44,7 @@ defmodule UOF.API.Utils.HTTP.Test do
       {:ok,
        Req.Response.new(
          status: 404,
-         body:
-           ~s(<response response_code="NOT_FOUND"><message>No data for event</message></response>)
+         body: ~s(<response response_code="NOT_FOUND"><message>No data for event</message></response>)
        )}
     end)
 
