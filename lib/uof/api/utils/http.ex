@@ -2,6 +2,7 @@ defmodule UOF.API.Utils.HTTP do
   @moduledoc false
 
   alias UOF.API.Error
+  alias UOF.Schemas.XML
 
   def get(path, params \\ []) do
     client()
@@ -28,8 +29,7 @@ defmodule UOF.API.Utils.HTTP do
 
   # Classify the HTTP status before decoding: successful endpoints are polymorphic
   # on their XML root element, while errors may be XML, JSON, HTML, or empty.
-  defp handle_response({:ok, %Req.Response{status: status} = response})
-       when status in 200..299 do
+  defp handle_response({:ok, %Req.Response{status: status} = response}) when status in 200..299 do
     decode_success(response)
   end
 
@@ -61,7 +61,7 @@ defmodule UOF.API.Utils.HTTP do
   end
 
   defp decode_xml(%Req.Response{body: body} = response) do
-    case UOF.Schemas.XML.decode(body) do
+    case XML.decode(body) do
       {:ok, decoded} -> {:ok, decoded}
       {:error, reason} -> {:error, decode_error(response, reason)}
     end
@@ -90,7 +90,7 @@ defmodule UOF.API.Utils.HTTP do
     if String.trim(body) == "" do
       body
     else
-      case UOF.Schemas.XML.decode(body) do
+      case XML.decode(body) do
         {:ok, decoded} -> decoded
         {:error, _reason} -> body
       end

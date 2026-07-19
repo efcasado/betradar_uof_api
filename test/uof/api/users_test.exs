@@ -15,7 +15,7 @@ defmodule UOF.API.Users.Test do
     {:ok, details} = UOF.API.Users.whoami()
 
     assert details.expire_at == ~U[2023-02-03 22:50:17Z]
-    assert details.bookmaker_id == 11111
+    assert details.bookmaker_id == 11_111
     assert details.virtual_host == "/unifiedfeed/11111"
   end
 end
