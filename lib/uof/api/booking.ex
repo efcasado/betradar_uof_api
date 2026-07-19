@@ -17,9 +17,12 @@ defmodule UOF.API.Booking do
 
   @doc """
   Book the given `sport_event` (e.g. `"sr:match:12345"`) for live odds.
+
+  The trailing `opts` is a keyword list merged into the Req request (see
+  `UOF.API.Utils.HTTP`).
   """
-  def book(sport_event) do
+  def book(sport_event, opts \\ []) do
     endpoint = ["liveodds", "booking-calendar", "events", sport_event, "book"]
-    HTTP.post(endpoint)
+    HTTP.post(endpoint, "", [], opts)
   end
 end

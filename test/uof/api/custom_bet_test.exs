@@ -7,12 +7,12 @@ defmodule UOF.API.CustomBet.Test do
   alias UOF.Schemas.XML
 
   setup do
-    stub(HTTP, :get, fn _endpoint ->
+    stub(HTTP, :get, fn _endpoint, _params, _opts ->
       data = File.read!("test/data/available_selections.xml")
       XML.decode(data)
     end)
 
-    stub(HTTP, :post, fn _endpoint, _body ->
+    stub(HTTP, :post, fn _endpoint, _body, _params, _opts ->
       data = File.read!("test/data/custombet_calculation.xml")
       XML.decode(data)
     end)
@@ -48,5 +48,19 @@ defmodule UOF.API.CustomBet.Test do
     assert market.id == 87
     assert market.specifiers == "hcp=0:2"
     assert Enum.map(market.outcome, & &1.id) == ["1711", "1712", "1713"]
+  end
+
+  test "calculate/2 with filter uses the calculate-filter endpoint" do
+    stub(HTTP, :post, fn endpoint, body, _params, _opts ->
+      assert endpoint == ["custombet", "calculate-filter"]
+      assert body =~ ~s(<selection id="sr:match:42795059">)
+      assert body =~ ~s(<market market_id="97" outcome_id="74"/>)
+      assert body =~ ~s(<market market_id="10" outcome_id="9"/>)
+      data = File.read!("test/data/custombet_calculation.xml")
+      XML.decode(data)
+    end)
+
+    selections = [{"sr:match:42795059", 97, 74}, {"sr:match:42795059", 10, 9}]
+    assert {:ok, _calculation} = CustomBet.calculate(selections, true)
   end
 end

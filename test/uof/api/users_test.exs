@@ -3,7 +3,7 @@ defmodule UOF.API.Users.Test do
   use Mimic
 
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn endpoint ->
+    stub(UOF.API.Utils.HTTP, :get, fn endpoint, _params, _opts ->
       data = File.read!("test/data/" <> Enum.at(endpoint, -1))
       UOF.Schemas.XML.decode(data)
     end)

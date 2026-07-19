@@ -2,17 +2,21 @@ defmodule UOF.API.Probability.Test do
   use ExUnit.Case
   use Mimic
 
+  alias UOF.API.Probability
+  alias UOF.API.Utils.HTTP
+  alias UOF.Schemas.XML
+
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn _endpoint ->
+    stub(HTTP, :get, fn _endpoint, _params, _opts ->
       data = File.read!("test/data/cashout.xml")
-      UOF.Schemas.XML.decode(data)
+      XML.decode(data)
     end)
 
     :ok
   end
 
   test "can parse UOF.API.Probability.probabilities/1" do
-    {:ok, cashout} = UOF.API.Probability.probabilities("sr:match:41878167")
+    {:ok, cashout} = Probability.probabilities("sr:match:41878167")
 
     assert cashout.sport_event_status.status == 1
     assert cashout.sport_event_status.match_status == 7
@@ -32,5 +36,24 @@ defmodule UOF.API.Probability.Test do
     assert outcome.id == "1729"
     assert outcome.active == 1
     assert_in_delta outcome.probabilities, 3.58e-4, 0.01e-4
+  end
+
+  test "probabilities/2 requests the market-scoped endpoint" do
+    stub(HTTP, :get, fn endpoint, _params, _opts ->
+      assert endpoint == ["probabilities", "sr:match:41878167", "66"]
+      XML.decode(File.read!("test/data/cashout.xml"))
+    end)
+
+    assert {:ok, _cashout} = Probability.probabilities("sr:match:41878167", "66")
+  end
+
+  test "probabilities/3 requests the market+specifier-scoped endpoint" do
+    stub(HTTP, :get, fn endpoint, _params, _opts ->
+      assert endpoint == ["probabilities", "sr:match:41878167", "66", "hcp=0.5"]
+      XML.decode(File.read!("test/data/cashout.xml"))
+    end)
+
+    assert {:ok, _cashout} =
+             Probability.probabilities("sr:match:41878167", "66", "hcp=0.5")
   end
 end

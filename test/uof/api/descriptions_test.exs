@@ -5,7 +5,7 @@ defmodule UOF.API.Descriptions.Test do
   alias UOF.API.Descriptions
 
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn endpoint ->
+    stub(UOF.API.Utils.HTTP, :get, fn endpoint, _params, _opts ->
       data = File.read!("test/data/" <> Enum.at(endpoint, -1))
       UOF.Schemas.XML.decode(data)
     end)

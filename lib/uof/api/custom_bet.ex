@@ -15,20 +15,20 @@ defmodule UOF.API.CustomBet do
   Get the markets that are available to be used in a custom bet from the given
   fixture.
   """
-  def available_selections(fixture) do
+  def available_selections(fixture, opts \\ []) do
     endpoint = ["custombet", fixture, "available_selections"]
 
-    HTTP.get(endpoint)
+    HTTP.get(endpoint, [], opts)
   end
 
   @doc """
   Calculate the probability and odds for the given selections. It also returns
   a list of further markets that can be added to the custom bet.
   """
-  def calculate(selections, filter \\ false) do
+  def calculate(selections, filter \\ false, opts \\ []) do
     body = selections_to_xml(selections, filter)
     endpoint = calculate_endpoint(filter)
-    HTTP.post(endpoint, body)
+    HTTP.post(endpoint, body, [], opts)
   end
 
   defp calculate_endpoint(true), do: ["custombet", "calculate-filter"]

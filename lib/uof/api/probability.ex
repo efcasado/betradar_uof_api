@@ -16,26 +16,15 @@ defmodule UOF.API.Probability do
   alias UOF.API.Utils.HTTP
 
   @doc """
-  Get probabilities for the given fixture.
-  """
-  def probabilities(fixture) do
-    endpoint = ["probabilities", fixture]
-    HTTP.get(endpoint)
-  end
+  Get probabilities for the given fixture, optionally narrowed to a `market`
+  and, within it, a `specifier`.
 
-  @doc """
-  Get probabilities for the specified market in the given fixture.
+  The trailing `opts` is a keyword list merged into the Req request (see
+  `UOF.API.Utils.HTTP`); to pass it while leaving `market`/`specifier`
+  unset, call `probabilities(fixture, nil, nil, opts)`.
   """
-  def probabilities(fixture, market) do
-    endpoint = ["probabilities", fixture, market]
-    HTTP.get(endpoint)
-  end
-
-  @doc """
-  Get probabilities for the specified market with specifier in the given fixture.
-  """
-  def probabilities(fixture, market, specifier) do
-    endpoint = ["probabilities", fixture, market, specifier]
-    HTTP.get(endpoint)
+  def probabilities(fixture, market \\ nil, specifier \\ nil, opts \\ []) do
+    endpoint = ["probabilities", fixture] ++ Enum.reject([market, specifier], &is_nil/1)
+    HTTP.get(endpoint, [], opts)
   end
 end

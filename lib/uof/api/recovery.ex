@@ -11,11 +11,14 @@ defmodule UOF.API.Recovery do
 
   Functions return `{:ok, response_or_nil} | {:error, UOF.API.Error.t()}`.
 
-  Common options:
+  Common `params`:
 
     * `:request_id` — correlates the resulting `snapshot_complete` feed message
     * `:node_id` — target a specific feed node
     * `:after` — only on `recover/2`; milliseconds since the Unix epoch (UTC)
+
+  Every function also accepts a trailing `opts` keyword list, merged into the
+  Req request (see `UOF.API.Utils.HTTP`).
   """
   alias UOF.API.Utils.HTTP
 
@@ -25,25 +28,25 @@ defmodule UOF.API.Recovery do
   With `:after`, recovers messages generated after that timestamp; without it,
   recovers a full snapshot of the current odds.
   """
-  def recover(product, opts \\ []) do
+  def recover(product, params \\ [], opts \\ []) do
     endpoint = [product, "recovery", "initiate_request"]
-    HTTP.post(endpoint, "", Keyword.take(opts, [:after, :request_id, :node_id]))
+    HTTP.post(endpoint, "", Keyword.take(params, [:after, :request_id, :node_id]), opts)
   end
 
   @doc """
   Recover odds for a single `sport_event` (e.g. `"sr:match:12345"`).
   """
-  def recover_event(product, sport_event, opts \\ []) do
+  def recover_event(product, sport_event, params \\ [], opts \\ []) do
     endpoint = [product, "odds", "events", sport_event, "initiate_request"]
-    HTTP.post(endpoint, "", Keyword.take(opts, [:request_id, :node_id]))
+    HTTP.post(endpoint, "", Keyword.take(params, [:request_id, :node_id]), opts)
   end
 
   @doc """
   Recover stateful messages (e.g. `bet_settlement`, `bet_cancel`) for a single
   `sport_event`.
   """
-  def recover_stateful_messages(product, sport_event, opts \\ []) do
+  def recover_stateful_messages(product, sport_event, params \\ [], opts \\ []) do
     endpoint = [product, "stateful_messages", "events", sport_event, "initiate_request"]
-    HTTP.post(endpoint, "", Keyword.take(opts, [:request_id, :node_id]))
+    HTTP.post(endpoint, "", Keyword.take(params, [:request_id, :node_id]), opts)
   end
 end

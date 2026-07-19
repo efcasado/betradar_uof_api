@@ -9,10 +9,13 @@ defmodule UOF.API.Users do
   @doc """
   Get information about the token being used, including information such as
   the caller's bookmaker id and when the caller's access token will expire.
+
+  The trailing `opts` is a keyword list merged into the Req request (see
+  `UOF.API.Utils.HTTP`).
   """
-  def whoami do
+  def whoami(opts \\ []) do
     endpoint = ["users", "whoami.xml"]
 
-    HTTP.get(endpoint)
+    HTTP.get(endpoint, [], opts)
   end
 end
