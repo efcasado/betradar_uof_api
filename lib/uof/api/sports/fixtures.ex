@@ -18,13 +18,14 @@ defmodule UOF.API.Sports.Fixtures do
 
       Sports.Fixtures.stream() |> Stream.map(& &1.id) |> Enum.take(50)
 
-  API errors are raised when the stream is enumerated.
+  API errors are raised when the stream is enumerated. The trailing `opts` is a
+  keyword list merged into each page's Req request (see `UOF.API.Utils.HTTP`).
   """
-  def stream(lang \\ "en") do
+  def stream(lang \\ "en", opts \\ []) do
     Stream.resource(
       fn -> 0 end,
       fn start ->
-        case Sports.pre_schedule(start, @page_size, lang) do
+        case Sports.pre_schedule(start, @page_size, lang, opts) do
           {:ok, %{sport_event: []}} -> {:halt, start}
           {:ok, %{sport_event: events}} -> {events, start + @page_size}
           {:error, error} -> raise error
@@ -37,13 +38,13 @@ defmodule UOF.API.Sports.Fixtures do
   @doc """
   Stream fixtures restricted to the given sport name(s).
   """
-  def by_sport(sports, lang \\ "en")
+  def by_sport(sports, lang \\ "en", opts \\ [])
 
-  def by_sport(sports, lang) when is_list(sports) do
-    stream(lang) |> Stream.filter(&(&1.tournament.sport.name in sports))
+  def by_sport(sports, lang, opts) when is_list(sports) do
+    stream(lang, opts) |> Stream.filter(&(&1.tournament.sport.name in sports))
   end
 
-  def by_sport(sport, lang), do: by_sport([sport], lang)
+  def by_sport(sport, lang, opts), do: by_sport([sport], lang, opts)
 
   ## Booking-state filters
   ## =========================================================================

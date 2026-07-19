@@ -3,19 +3,23 @@ defmodule UOF.API.Utils.HTTP do
 
   alias UOF.API.Error
 
-  def get(path, params \\ []) do
-    client()
+  def get(path, params \\ [], opts \\ []) do
+    opts
+    |> client()
     |> Req.get(url: Enum.join(path, "/"), params: params)
     |> handle_response()
   end
 
-  def post(path, body \\ "", params \\ []) do
-    client()
+  def post(path, body \\ "", params \\ [], opts \\ []) do
+    opts
+    |> client()
     |> Req.post(url: Enum.join(path, "/"), params: params, body: body)
     |> handle_response()
   end
 
-  defp client do
+  # `opts` is merged last (via Req.merge/2, so headers/params combine rather
+  # than clobber) letting a single call override the `:req_options` app config.
+  defp client(opts) do
     Req.new(
       base_url: Application.fetch_env!(:uof_api, :base_url) <> "/",
       headers: %{
@@ -24,6 +28,8 @@ defmodule UOF.API.Utils.HTTP do
         "accept" => "application/xml"
       }
     )
+    |> Req.merge(Application.get_env(:uof_api, :req_options, []))
+    |> Req.merge(opts)
   end
 
   # Classify the HTTP status before decoding: successful endpoints are polymorphic

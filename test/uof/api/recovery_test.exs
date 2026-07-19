@@ -3,7 +3,7 @@ defmodule UOF.API.Recovery.Test do
   use Mimic
 
   setup do
-    stub(UOF.API.Utils.HTTP, :post, fn _endpoint, _body, _params ->
+    stub(UOF.API.Utils.HTTP, :post, fn _endpoint, _body, _params, _opts ->
       data = File.read!("test/data/recovery_response.xml")
       UOF.Schemas.XML.decode(data)
     end)

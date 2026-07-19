@@ -98,6 +98,30 @@ defmodule UOF.API.Utils.HTTP.Test do
     assert error.message == "UOF API transport error: connection closed"
   end
 
+  test "merges :req_options app config into the request" do
+    Application.put_env(:uof_api, :req_options, receive_timeout: 1234)
+    on_exit(fn -> Application.delete_env(:uof_api, :req_options) end)
+
+    expect(Req, :get, fn request, _options ->
+      assert request.options.receive_timeout == 1234
+      {:ok, Req.Response.new(status: 200, body: "")}
+    end)
+
+    assert {:ok, nil} = HTTP.get(["sports.xml"])
+  end
+
+  test "per-call opts override :req_options app config" do
+    Application.put_env(:uof_api, :req_options, receive_timeout: 1234)
+    on_exit(fn -> Application.delete_env(:uof_api, :req_options) end)
+
+    expect(Req, :get, fn request, _options ->
+      assert request.options.receive_timeout == 5678
+      {:ok, Req.Response.new(status: 200, body: "")}
+    end)
+
+    assert {:ok, nil} = HTTP.get(["sports.xml"], [], receive_timeout: 5678)
+  end
+
   test "returns decoding failures instead of raising" do
     expect(Req, :get, fn _request, _options ->
       {:ok, Req.Response.new(status: 200, body: "not XML")}

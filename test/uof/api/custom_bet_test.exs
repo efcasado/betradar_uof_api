@@ -3,12 +3,12 @@ defmodule UOF.API.CustomBet.Test do
   use Mimic
 
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn _endpoint ->
+    stub(UOF.API.Utils.HTTP, :get, fn _endpoint, _params, _opts ->
       data = File.read!("test/data/available_selections.xml")
       UOF.Schemas.XML.decode(data)
     end)
 
-    stub(UOF.API.Utils.HTTP, :post, fn _endpoint, _body ->
+    stub(UOF.API.Utils.HTTP, :post, fn _endpoint, _body, _params, _opts ->
       data = File.read!("test/data/custombet_calculation.xml")
       UOF.Schemas.XML.decode(data)
     end)
@@ -44,5 +44,19 @@ defmodule UOF.API.CustomBet.Test do
     assert market.id == 87
     assert market.specifiers == "hcp=0:2"
     assert Enum.map(market.outcome, & &1.id) == ["1711", "1712", "1713"]
+  end
+
+  test "calculate/2 with filter uses the calculate-filter endpoint" do
+    stub(UOF.API.Utils.HTTP, :post, fn endpoint, body, _params, _opts ->
+      assert endpoint == ["custombet", "calculate-filter"]
+      assert body =~ ~s(<selection id="sr:match:42795059">)
+      assert body =~ ~s(<market market_id="97" outcome_id="74"/>)
+      assert body =~ ~s(<market market_id="10" outcome_id="9"/>)
+      data = File.read!("test/data/custombet_calculation.xml")
+      UOF.Schemas.XML.decode(data)
+    end)
+
+    selections = [{"sr:match:42795059", 97, 74}, {"sr:match:42795059", 10, 9}]
+    assert {:ok, _calculation} = UOF.API.CustomBet.calculate(selections, true)
   end
 end

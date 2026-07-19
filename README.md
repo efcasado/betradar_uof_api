@@ -40,6 +40,20 @@ to use.
 :ok = Application.put_env(:uof_api, :auth_token, "<betradar-uof-auth-token>")
 ```
 
+Optionally, configure `:req_options` — a keyword list merged into every request
+(via `Req.merge/2`), for things like timeouts and retries:
+
+```elixir
+:ok = Application.put_env(:uof_api, :req_options, receive_timeout: 10_000, retry: :transient)
+```
+
+Every API function also accepts a trailing `opts` keyword list to override
+request behavior for a single call, without touching the global config:
+
+```elixir
+UOF.API.Sports.fixture("sr:match:12345", "en", receive_timeout: 30_000)
+```
+
 ### Usage
 
 Stream all available fixtures. Pagination over the prematch schedule is handled

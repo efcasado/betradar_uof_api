@@ -3,12 +3,7 @@ defmodule UOF.API.Sports.Test do
   use Mimic
 
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn endpoint ->
-      {:ok, data} = fetch_mock_data(endpoint)
-      UOF.Schemas.XML.decode(data)
-    end)
-
-    stub(UOF.API.Utils.HTTP, :get, fn endpoint, _params ->
+    stub(UOF.API.Utils.HTTP, :get, fn endpoint, _params, _opts ->
       {:ok, data} = fetch_mock_data(endpoint)
       UOF.Schemas.XML.decode(data)
     end)
@@ -155,7 +150,9 @@ defmodule UOF.API.Sports.Test do
   # the root element must surface it as a TournamentInfoEndpoint instead of a
   # hollow FixturesEndpoint.
   test "fixture/2 on a season id returns the tournament_info document" do
-    stub(UOF.API.Utils.HTTP, :get, fn ["sports", _lang, "sport_events", _id, "fixture.xml"] ->
+    stub(UOF.API.Utils.HTTP, :get, fn ["sports", _lang, "sport_events", _id, "fixture.xml"],
+                                      _params,
+                                      _opts ->
       UOF.Schemas.XML.decode(File.read!("test/data/tournament_info.xml"))
     end)
 
@@ -188,7 +185,7 @@ defmodule UOF.API.Sports.Test do
   test "stream/0 paginates the prematch schedule and aggregates events" do
     page = File.read!("test/data/schedule.xml")
 
-    stub(UOF.API.Utils.HTTP, :get, fn _endpoint, params ->
+    stub(UOF.API.Utils.HTTP, :get, fn _endpoint, params, _opts ->
       data = if Keyword.get(params, :start, 0) == 0, do: page, else: "<schedule/>"
       UOF.Schemas.XML.decode(data)
     end)
@@ -204,7 +201,7 @@ defmodule UOF.API.Sports.Test do
   test "stream/0 raises API errors while enumerating" do
     error = %UOF.API.Error{type: :http, status: 503, message: "UOF API returned HTTP 503"}
 
-    stub(UOF.API.Utils.HTTP, :get, fn _endpoint, _params -> {:error, error} end)
+    stub(UOF.API.Utils.HTTP, :get, fn _endpoint, _params, _opts -> {:error, error} end)
 
     assert_raise UOF.API.Error, "UOF API returned HTTP 503", fn ->
       UOF.API.Sports.Fixtures.stream() |> Enum.to_list()
