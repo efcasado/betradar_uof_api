@@ -2,6 +2,8 @@ defmodule UOF.API.Descriptions.Test do
   use ExUnit.Case
   use Mimic
 
+  alias UOF.API.Descriptions
+
   setup do
     stub(UOF.API.Utils.HTTP, :get, fn endpoint, _params, _opts ->
       data = File.read!("test/data/" <> Enum.at(endpoint, -1))
@@ -12,7 +14,7 @@ defmodule UOF.API.Descriptions.Test do
   end
 
   test "can parse UOF.API.Descriptions.markets/{0, 1} response" do
-    {:ok, desc} = UOF.API.Descriptions.markets()
+    {:ok, desc} = Descriptions.markets()
 
     market = hd(desc.market)
 
@@ -24,7 +26,7 @@ defmodule UOF.API.Descriptions.Test do
   end
 
   test "can parse UOF.API.Descriptions.match_statuses/{0, 1} response" do
-    {:ok, desc} = UOF.API.Descriptions.match_statuses()
+    {:ok, desc} = Descriptions.match_statuses()
 
     assert Enum.count(desc.match_status) == 185
 
@@ -59,7 +61,7 @@ defmodule UOF.API.Descriptions.Test do
   end
 
   test "can parse UOF.API.Descriptions.betstop_reasons/0 response" do
-    {:ok, desc} = UOF.API.Descriptions.betstop_reasons()
+    {:ok, desc} = Descriptions.betstop_reasons()
 
     reason = hd(desc.betstop_reason)
 
@@ -69,7 +71,7 @@ defmodule UOF.API.Descriptions.Test do
   end
 
   test "can parse UOF.API.Descriptions.betting_statuses/0 response" do
-    {:ok, desc} = UOF.API.Descriptions.betting_statuses()
+    {:ok, desc} = Descriptions.betting_statuses()
 
     status = hd(desc.betting_status)
 
@@ -79,7 +81,7 @@ defmodule UOF.API.Descriptions.Test do
   end
 
   test "can parse UOF.API.Descriptions.void_reasons/0 response" do
-    {:ok, desc} = UOF.API.Descriptions.void_reasons()
+    {:ok, desc} = Descriptions.void_reasons()
 
     reason = hd(desc.void_reason)
 
@@ -89,7 +91,7 @@ defmodule UOF.API.Descriptions.Test do
   end
 
   test "can parse UOF.API.Descriptions.variants/{0, 1} response" do
-    {:ok, desc} = UOF.API.Descriptions.variants()
+    {:ok, desc} = Descriptions.variants()
 
     assert Enum.count(desc.variant) == 144
     variant = hd(desc.variant)
@@ -113,7 +115,7 @@ defmodule UOF.API.Descriptions.Test do
   end
 
   test "can parse UOF.API.Descriptions.producers/0 response" do
-    {:ok, desc} = UOF.API.Descriptions.producers()
+    {:ok, desc} = Descriptions.producers()
 
     producer = hd(desc.producer)
 

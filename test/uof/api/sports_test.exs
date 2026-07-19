@@ -2,10 +2,16 @@ defmodule UOF.API.Sports.Test do
   use ExUnit.Case
   use Mimic
 
+  alias UOF.API.Error
+  alias UOF.API.Sports
+  alias UOF.API.Sports.Fixtures
+  alias UOF.API.Utils.HTTP
+  alias UOF.Schemas.XML
+
   setup do
-    stub(UOF.API.Utils.HTTP, :get, fn endpoint, _params, _opts ->
+    stub(HTTP, :get, fn endpoint, _params, _opts ->
       {:ok, data} = fetch_mock_data(endpoint)
-      UOF.Schemas.XML.decode(data)
+      XML.decode(data)
     end)
 
     :ok
@@ -75,7 +81,7 @@ defmodule UOF.API.Sports.Test do
   ## =========================================================================
 
   test "can parse UOF.API.Sports.fixture/{1, 2} response" do
-    {:ok, ff} = UOF.API.Sports.fixture("sr:match:8696826")
+    {:ok, ff} = Sports.fixture("sr:match:8696826")
 
     fixture = ff.fixture
     # fixture attributes
@@ -150,20 +156,18 @@ defmodule UOF.API.Sports.Test do
   # the root element must surface it as a TournamentInfoEndpoint instead of a
   # hollow FixturesEndpoint.
   test "fixture/2 on a season id returns the tournament_info document" do
-    stub(UOF.API.Utils.HTTP, :get, fn ["sports", _lang, "sport_events", _id, "fixture.xml"],
-                                      _params,
-                                      _opts ->
-      UOF.Schemas.XML.decode(File.read!("test/data/tournament_info.xml"))
+    stub(HTTP, :get, fn ["sports", _lang, "sport_events", _id, "fixture.xml"], _params, _opts ->
+      XML.decode(File.read!("test/data/tournament_info.xml"))
     end)
 
     assert {:ok, %UOF.Schemas.API.Sports.TournamentInfoEndpoint{} = info} =
-             UOF.API.Sports.fixture("sr:season:101177")
+             Sports.fixture("sr:season:101177")
 
     assert info.tournament.id == "sr:tournament:7"
   end
 
   test "can parse UOF.API.Sports.fixture_changes/{0, 1} response" do
-    {:ok, data} = UOF.API.Sports.fixture_changes()
+    {:ok, data} = Sports.fixture_changes()
 
     change = hd(data.fixture_change)
 
@@ -173,7 +177,7 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "can parse UOF.API.Sports.result_changes/{0, 1} response" do
-    {:ok, data} = UOF.API.Sports.result_changes()
+    {:ok, data} = Sports.result_changes()
 
     change = hd(data.result_change)
 
@@ -185,12 +189,12 @@ defmodule UOF.API.Sports.Test do
   test "stream/0 paginates the prematch schedule and aggregates events" do
     page = File.read!("test/data/schedule.xml")
 
-    stub(UOF.API.Utils.HTTP, :get, fn _endpoint, params, _opts ->
+    stub(HTTP, :get, fn _endpoint, params, _opts ->
       data = if Keyword.get(params, :start, 0) == 0, do: page, else: "<schedule/>"
-      UOF.Schemas.XML.decode(data)
+      XML.decode(data)
     end)
 
-    events = UOF.API.Sports.Fixtures.stream() |> Enum.to_list()
+    events = Enum.to_list(Fixtures.stream())
 
     assert length(events) == 4
 
@@ -199,27 +203,27 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "stream/0 raises API errors while enumerating" do
-    error = %UOF.API.Error{type: :http, status: 503, message: "UOF API returned HTTP 503"}
+    error = %Error{type: :http, status: 503, message: "UOF API returned HTTP 503"}
 
-    stub(UOF.API.Utils.HTTP, :get, fn _endpoint, _params, _opts -> {:error, error} end)
+    stub(HTTP, :get, fn _endpoint, _params, _opts -> {:error, error} end)
 
-    assert_raise UOF.API.Error, "UOF API returned HTTP 503", fn ->
-      UOF.API.Sports.Fixtures.stream() |> Enum.to_list()
+    assert_raise Error, "UOF API returned HTTP 503", fn ->
+      Enum.to_list(Fixtures.stream())
     end
   end
 
   test "filters a schedule by liveodds booking state" do
     {:ok, schedule} =
-      UOF.Schemas.XML.decode(
+      XML.decode(
         File.read!("test/data/schedule.xml"),
         UOF.Schemas.API.Sports.ScheduleEndpoint
       )
 
-    assert Enum.map(UOF.API.Sports.Fixtures.bookable(schedule), & &1.id) == ["sr:match:1"]
-    assert Enum.map(UOF.API.Sports.Fixtures.booked(schedule), & &1.id) == ["sr:match:2"]
-    assert Enum.map(UOF.API.Sports.Fixtures.buyable(schedule), & &1.id) == ["sr:match:3"]
+    assert Enum.map(Fixtures.bookable(schedule), & &1.id) == ["sr:match:1"]
+    assert Enum.map(Fixtures.booked(schedule), & &1.id) == ["sr:match:2"]
+    assert Enum.map(Fixtures.buyable(schedule), & &1.id) == ["sr:match:3"]
 
-    assert Enum.map(UOF.API.Sports.Fixtures.with_liveodds(schedule, "not_available"), & &1.id) ==
+    assert Enum.map(Fixtures.with_liveodds(schedule, "not_available"), & &1.id) ==
              [
                "sr:match:4"
              ]
@@ -228,7 +232,7 @@ defmodule UOF.API.Sports.Test do
   ## Sport event information
   ## =========================================================================
   test "can parse 'sports/:lang/sport_events/:fixture/summary.xml' response" do
-    {:ok, summary} = UOF.API.Sports.summary("sr:match:42308595")
+    {:ok, summary} = Sports.summary("sr:match:42308595")
 
     sport_event = summary.sport_event
     # sport event
@@ -240,7 +244,7 @@ defmodule UOF.API.Sports.Test do
     assert sport_event.tournament_round.number == 30
     assert sport_event.tournament_round.group_long_name == "2nd Bundesliga"
     assert sport_event.tournament_round.betradar_name == "2nd Bundesliga"
-    assert sport_event.tournament_round.betradar_id == 16956
+    assert sport_event.tournament_round.betradar_id == 16_956
     # sport event -> season
     assert sport_event.season.start_date == ~D[2023-09-01]
     assert sport_event.season.end_date == ~D[2024-06-01]
@@ -326,7 +330,7 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "can parse UOF.API.Sports.timeline/{1, 2} response" do
-    {:ok, timeline} = UOF.API.Sports.timeline("sr:match:42308595")
+    {:ok, timeline} = Sports.timeline("sr:match:42308595")
 
     sport_event = timeline.sport_event
     assert sport_event.id == "sr:match:42308595"
@@ -370,7 +374,7 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "can parse UOF.API.Sports.categories/{1, 2} response" do
-    {:ok, sport_categories} = UOF.API.Sports.categories("sr:sport:1")
+    {:ok, sport_categories} = Sports.categories("sr:sport:1")
 
     # sport
     sport = sport_categories.sport
@@ -386,7 +390,7 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "can parse UOF.API.Sports.tournaments/{0, 1} response" do
-    {:ok, data} = UOF.API.Sports.tournaments()
+    {:ok, data} = Sports.tournaments()
 
     tournament = Enum.at(data.tournament, 2)
 
@@ -413,7 +417,7 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "can parse UOF.API.Sports.sports/{0, 1} response" do
-    {:ok, data} = UOF.API.Sports.sports()
+    {:ok, data} = Sports.sports()
 
     sport = hd(data.sport)
 
@@ -423,7 +427,7 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "can parse UOF.API.Sports.tournament/{1, 2} response" do
-    {:ok, info} = UOF.API.Sports.tournament("sr:tournament:7")
+    {:ok, info} = Sports.tournament("sr:tournament:7")
 
     # tournament
     assert info.tournament.id == "sr:tournament:7"
@@ -463,7 +467,7 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "can parse UOF.API.Sports.sport_tournaments/{1, 2} response" do
-    {:ok, data} = UOF.API.Sports.sport_tournaments("sr:sport:1")
+    {:ok, data} = Sports.sport_tournaments("sr:sport:1")
 
     assert data.sport.id == "sr:sport:1"
     assert data.sport.name == "Soccer"
@@ -474,7 +478,7 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "can parse UOF.API.Sports.seasons/{1, 2} response" do
-    {:ok, data} = UOF.API.Sports.seasons("sr:tournament:7")
+    {:ok, data} = Sports.seasons("sr:tournament:7")
 
     assert data.tournament.id == "sr:tournament:7"
 
@@ -486,7 +490,7 @@ defmodule UOF.API.Sports.Test do
   ## Entity descriptions
   ## =========================================================================
   test "can parse UOF.API.Sports.player/{1, 2} response" do
-    {:ok, profile} = UOF.API.Sports.player("sr:player:72771")
+    {:ok, profile} = Sports.player("sr:player:72771")
 
     assert profile.player.date_of_birth == "1973-08-29"
     assert profile.player.nationality == "Germany"
@@ -498,7 +502,7 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "can parse UOF.API.Sports.competitor/{1, 2} response" do
-    {:ok, profile} = UOF.API.Sports.competitor("sr:competitor:2672")
+    {:ok, profile} = Sports.competitor("sr:competitor:2672")
 
     # competitor
     assert profile.competitor.id == "sr:competitor:2672"
@@ -517,7 +521,7 @@ defmodule UOF.API.Sports.Test do
     # venue
     assert profile.venue.id == "sr:venue:574"
     assert profile.venue.name == "Allianz Arena"
-    assert profile.venue.capacity == 75000
+    assert profile.venue.capacity == 75_000
     assert profile.venue.city_name == "Munich"
     assert profile.venue.country_name == "Germany"
     assert profile.venue.country_code == "DEU"
@@ -556,12 +560,12 @@ defmodule UOF.API.Sports.Test do
   end
 
   test "can parse UOF.API.Sports.venue/{1, 2} response" do
-    {:ok, profile} = UOF.API.Sports.venue("sr:venue:574")
+    {:ok, profile} = Sports.venue("sr:venue:574")
 
     # venue
     assert profile.venue.id == "sr:venue:574"
     assert profile.venue.name == "Allianz Arena"
-    assert profile.venue.capacity == 75000
+    assert profile.venue.capacity == 75_000
     assert profile.venue.city_name == "Munich"
     assert profile.venue.country_name == "Germany"
     assert profile.venue.country_code == "DEU"

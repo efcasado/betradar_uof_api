@@ -2,6 +2,7 @@ defmodule UOF.API.Utils.HTTP do
   @moduledoc false
 
   alias UOF.API.Error
+  alias UOF.Schemas.XML
 
   def get(path, params \\ [], opts \\ []) do
     opts
@@ -20,22 +21,22 @@ defmodule UOF.API.Utils.HTTP do
   # `opts` is merged last (via Req.merge/2, so headers/params combine rather
   # than clobber) letting a single call override the `:req_options` app config.
   defp client(opts) do
-    Req.new(
+    [
       base_url: Application.fetch_env!(:uof_api, :base_url) <> "/",
       headers: %{
         "x-access-token" => Application.fetch_env!(:uof_api, :auth_token),
         "content-type" => "application/xml",
         "accept" => "application/xml"
       }
-    )
+    ]
+    |> Req.new()
     |> Req.merge(Application.get_env(:uof_api, :req_options, []))
     |> Req.merge(opts)
   end
 
   # Classify the HTTP status before decoding: successful endpoints are polymorphic
   # on their XML root element, while errors may be XML, JSON, HTML, or empty.
-  defp handle_response({:ok, %Req.Response{status: status} = response})
-       when status in 200..299 do
+  defp handle_response({:ok, %Req.Response{status: status} = response}) when status in 200..299 do
     decode_success(response)
   end
 
@@ -67,7 +68,7 @@ defmodule UOF.API.Utils.HTTP do
   end
 
   defp decode_xml(%Req.Response{body: body} = response) do
-    case UOF.Schemas.XML.decode(body) do
+    case XML.decode(body) do
       {:ok, decoded} -> {:ok, decoded}
       {:error, reason} -> {:error, decode_error(response, reason)}
     end
@@ -96,7 +97,7 @@ defmodule UOF.API.Utils.HTTP do
     if String.trim(body) == "" do
       body
     else
-      case UOF.Schemas.XML.decode(body) do
+      case XML.decode(body) do
         {:ok, decoded} -> decoded
         {:error, _reason} -> body
       end
