@@ -11,6 +11,37 @@
 * document usage of conventional commits ([6de2680](https://github.com/efcasado/uof_api/commit/6de2680f03382813fd13c9cf078062c4c43b5aaf))
 * remove logo ([3904612](https://github.com/efcasado/uof_api/commit/3904612b8d5850b0d337b8d221423e2319e99a4a))
 
+## [3.0.0](https://github.com/efcasado/betradar_uof_api/compare/v2.1.2...v3.0.0) (2026-07-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* structured error handling ([#57](https://github.com/efcasado/betradar_uof_api/issues/57))
+
+### Features
+
+* add support for including mappings with market descriptions ([#61](https://github.com/efcasado/betradar_uof_api/issues/61)) ([f7d8ff3](https://github.com/efcasado/betradar_uof_api/commit/f7d8ff3aeb7d51dcaf8cc50af9f890fb368bfc58))
+* add support for race_summary to summary/2 ([80e70b4](https://github.com/efcasado/betradar_uof_api/commit/80e70b4ae940a3b5331eb681058deebee66af07c))
+* allow users to specify req options globally and per call ([#59](https://github.com/efcasado/betradar_uof_api/issues/59)) ([c19f5be](https://github.com/efcasado/betradar_uof_api/commit/c19f5be118a0de9f1126e51fc05f2b607a4cbe54))
+* extend UOF.API.Sports.{fixture, result}_changes with after and sport filters ([#62](https://github.com/efcasado/betradar_uof_api/issues/62)) ([83e34b9](https://github.com/efcasado/betradar_uof_api/commit/83e34b94a425d0c13e1141cf572ec802f3bbd154))
+* structured error handling ([#57](https://github.com/efcasado/betradar_uof_api/issues/57)) ([3127249](https://github.com/efcasado/betradar_uof_api/commit/312724985732cdb660416ccfcd6fe92110c5b5d0))
+
+
+### Bug Fixes
+
+* disable redirect to prevent token leak ([#60](https://github.com/efcasado/betradar_uof_api/issues/60)) ([bf1b7cb](https://github.com/efcasado/betradar_uof_api/commit/bf1b7cbe19bc377742704aaf732c9a0d587b87d5))
+
+
+### Dependencies
+
+* bump req from 0.6.2 to 0.6.3 ([#55](https://github.com/efcasado/betradar_uof_api/issues/55)) ([a655e17](https://github.com/efcasado/betradar_uof_api/commit/a655e178426772ab67a317ff752ef51783db898a))
+
+
+### Miscellaneous Chores
+
+* add styler ([#58](https://github.com/efcasado/betradar_uof_api/issues/58)) ([82d2090](https://github.com/efcasado/betradar_uof_api/commit/82d2090df115a455a8a26261465921a2b78e22b0))
+* remove stale codds comment and add test ([82dc491](https://github.com/efcasado/betradar_uof_api/commit/82dc491c3fd869e45ff6b879099552c48602f748))
+
 ## [2.1.2](https://github.com/efcasado/betradar_uof_api/compare/v2.1.1...v2.1.2) (2026-07-14)
 
 

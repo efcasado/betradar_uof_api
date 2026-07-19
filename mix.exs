@@ -4,7 +4,7 @@ defmodule UofApi.MixProject do
   def project do
     [
       app: :uof_api,
-      version: "2.1.2",
+      version: "3.0.0",
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
