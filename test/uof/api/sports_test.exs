@@ -201,6 +201,16 @@ defmodule UOF.API.Sports.Test do
              ["sr:match:1", "sr:match:2", "sr:match:3", "sr:match:4"]
   end
 
+  test "stream/0 raises API errors while enumerating" do
+    error = %UOF.API.Error{type: :http, status: 503, message: "UOF API returned HTTP 503"}
+
+    stub(UOF.API.Utils.HTTP, :get, fn _endpoint, _params -> {:error, error} end)
+
+    assert_raise UOF.API.Error, "UOF API returned HTTP 503", fn ->
+      UOF.API.Sports.Fixtures.stream() |> Enum.to_list()
+    end
+  end
+
   test "filters a schedule by liveodds booking state" do
     {:ok, schedule} =
       UOF.Schemas.XML.decode(

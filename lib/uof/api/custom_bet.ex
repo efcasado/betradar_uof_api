@@ -6,6 +6,8 @@ defmodule UOF.API.CustomBet do
   calculation as if it was a regular accumulator bet.
 
   CustomBet API is only available for soccer and basketball fixtures.
+
+  Functions return `{:ok, response} | {:error, UOF.API.Error.t()}`.
   """
   alias UOF.API.Utils.HTTP
 

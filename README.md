@@ -169,9 +169,35 @@ Odds recovery (the recovered messages arrive over the AMQP feed; the HTTP call
 returns an acknowledgement):
 
 ```elixir
-{:ok, _ack} = UOF.API.Recovery.recover("liveodds", request_id: 1, after: 1_700_000_000_000)
-{:ok, _ack} = UOF.API.Recovery.recover_event("liveodds", "sr:match:12345", request_id: 2)
+{:ok, _ack_or_nil} = UOF.API.Recovery.recover("liveodds", request_id: 1, after: 1_700_000_000_000)
+{:ok, _ack_or_nil} = UOF.API.Recovery.recover_event("liveodds", "sr:match:12345", request_id: 2)
 ```
+
+### Error handling
+
+API calls return `{:ok, response}` for every successful HTTP status and
+`{:error, %UOF.API.Error{}}` for HTTP, transport, or XML decoding failures.
+Successful responses without a body return `{:ok, nil}`.
+
+The numeric HTTP status and Sportradar's response code are kept separately:
+
+```elixir
+case UOF.API.Sports.fixture("sr:match:12345") do
+  {:ok, fixture} ->
+    fixture
+
+  {:error, %UOF.API.Error{status: 404, response_code: "NOT_FOUND"} = error} ->
+    error.message
+
+  {:error, %UOF.API.Error{} = error} ->
+    error
+end
+```
+
+When present, response headers and the decoded error body are available through
+`error.headers` and `error.body`. Non-XML bodies such as JSON or CDN-generated
+HTML are preserved. Errors encountered by `UOF.API.Sports.Fixtures.stream/1`
+are raised while the stream is enumerated.
 
 
 ## Contributing

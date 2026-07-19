@@ -4,9 +4,12 @@ defmodule UOF.API.Recovery do
 
   Recovery requests are issued per `product` — the producer's path segment, such
   as `"liveodds"`, `"pre"` or `"ctrl"` (see `UOF.API.Descriptions.producers/0`).
-  The HTTP response is only an acknowledgement (`UOF.Schemas.Common.Response`);
-  the recovered messages themselves are delivered over the AMQP feed and the
-  sequence ends with a `snapshot_complete` message correlated by `request_id`.
+  The HTTP response is only an acknowledgement and may have no body (`nil`) or
+  contain an `UOF.Schemas.Common.Response`; the recovered messages themselves
+  are delivered over the AMQP feed and the sequence ends with a
+  `snapshot_complete` message correlated by `request_id`.
+
+  Functions return `{:ok, response_or_nil} | {:error, UOF.API.Error.t()}`.
 
   Common options:
 
