@@ -22,7 +22,6 @@ defmodule UOF.API.Sports do
   Get the details of the given fixture.
   """
   def fixture(fixture, lang \\ "en", opts \\ []) do
-    # TO-DO: handle codds fixture (eg. codds:competition_group:77739)
     endpoint = ["sports", lang, "sport_events", fixture, "fixture.xml"]
 
     HTTP.get(endpoint, [], opts)
