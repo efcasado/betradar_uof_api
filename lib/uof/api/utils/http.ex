@@ -23,6 +23,10 @@ defmodule UOF.API.Utils.HTTP do
   defp client(opts) do
     [
       base_url: Application.fetch_env!(:uof_api, :base_url) <> "/",
+      # Req only strips the standard `authorization` header on cross-origin
+      # redirects, not our custom x-access-token one, so redirects are
+      # disabled by default to keep the token from leaking to another origin.
+      redirect: false,
       headers: %{
         "x-access-token" => Application.fetch_env!(:uof_api, :auth_token),
         "content-type" => "application/xml",
