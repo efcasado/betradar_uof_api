@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<race_summary generated_at="2026-06-23T10:00:00Z">
+  <sport_event id="codds:competition_group:1" type="child" stage_type="competition_group"
+    scheduled="2026-06-23T18:00:00Z">
+    <parent id="sr:stage:1" name="Round 1" type="parent" stage_type="round"/>
+    <tournament id="sr:stage:2" name="Golf Tour 2026" scheduled="2026-01-01T10:00:00Z"
+      scheduled_end="2026-12-01T10:00:00Z">
+      <sport id="sr:sport:9" name="Golf"/>
+      <category id="sr:category:1" name="Men"/>
+    </tournament>
+    <competitors>
+      <competitor id="sr:competitor:1" name="Doe, Jane" abbreviation="DOE"/>
+    </competitors>
+  </sport_event>
+  <sport_event_status status="ended" winner_id="sr:competitor:1" period_of_leader="4">
+    <results coverage="live">
+      <competitor id="sr:competitor:1" position="1" points="10.0" status="finished">
+        <result value="4" type="strokes" specifiers="hole=1"/>
+        <result value="3" type="strokes" specifiers="hole=2"/>
+      </competitor>
+    </results>
+  </sport_event_status>
+</race_summary>

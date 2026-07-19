@@ -37,7 +37,7 @@ defmodule UofApi.MixProject do
 
   defp deps do
     [
-      {:uof_schemas, "~> 0.2"},
+      {:uof_schemas, "~> 0.3"},
       {:req, "~> 0.6.2"},
       {:xml_builder, "~> 2.3"},
       # dev

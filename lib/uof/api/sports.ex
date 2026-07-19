@@ -109,8 +109,6 @@ defmodule UOF.API.Sports do
   Get information and results for the given fixture.
   """
   def summary(fixture, lang \\ "en", opts \\ []) do
-    # https://docs.betradar.com/display/BD/UOF+-+Summary+end+point
-    # TO-DO: differentiate between match and race summaries
     endpoint = ["sports", lang, "sport_events", fixture, "summary.xml"]
 
     HTTP.get(endpoint, [], opts)
