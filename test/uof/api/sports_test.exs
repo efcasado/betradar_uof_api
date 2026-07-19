@@ -176,6 +176,16 @@ defmodule UOF.API.Sports.Test do
     assert change.update_time == ~U[2024-04-26 19:12:43Z]
   end
 
+  test "fixture_changes/2 passes the after/sport filters through as query params" do
+    expect(HTTP, :get, fn endpoint, params, _opts ->
+      {:ok, data} = fetch_mock_data(endpoint)
+      assert params == [after: "2024-04-26T00:00:00Z", sport: "sr:sport:1"]
+      XML.decode(data)
+    end)
+
+    Sports.fixture_changes("en", after: ~U[2024-04-26 00:00:00Z], sport: "sr:sport:1")
+  end
+
   test "can parse UOF.API.Sports.result_changes/{0, 1} response" do
     {:ok, data} = Sports.result_changes()
 
@@ -184,6 +194,16 @@ defmodule UOF.API.Sports.Test do
     assert Enum.count(data.result_change) == 4236
     assert change.sport_event_id == "sr:match:49689671"
     assert change.update_time == ~U[2024-04-26 19:12:56Z]
+  end
+
+  test "result_changes/2 passes the after/sport filters through as query params" do
+    expect(HTTP, :get, fn endpoint, params, _opts ->
+      {:ok, data} = fetch_mock_data(endpoint)
+      assert params == [after: "2024-04-26T00:00:00Z", sport: "sr:sport:1"]
+      XML.decode(data)
+    end)
+
+    Sports.result_changes("en", after: ~U[2024-04-26 00:00:00Z], sport: "sr:sport:1")
   end
 
   test "stream/0 paginates the prematch schedule and aggregates events" do

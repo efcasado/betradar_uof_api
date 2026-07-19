@@ -65,23 +65,42 @@ defmodule UOF.API.Sports do
   end
 
   @doc """
-  Get a list of all the fixtures that have changed in the last 24 hours.
+  Get a list of all the fixtures that have changed.
+
+  Defaults to changes in the last 24 hours. Pass `filters` to narrow the
+  results:
+
+    * `:after` - only return changes after this point in time (a `DateTime`,
+      `NaiveDateTime`, or an already-formatted ISO8601 string). Use this to
+      catch up on changes missed during downtime longer than 24 hours.
+    * `:sport` - only return changes for the given sport urn (e.g.
+      `"sr:sport:1"`).
   """
-  def fixture_changes(lang \\ "en", opts \\ []) do
-    # TO-DO: add support for 'after datetime' and 'sport' filters
+  def fixture_changes(lang \\ "en", filters \\ [], opts \\ []) do
     endpoint = ["sports", lang, "fixtures", "changes.xml"]
 
-    HTTP.get(endpoint, [], opts)
+    HTTP.get(endpoint, changes_params(filters), opts)
   end
 
   @doc """
-  Get a lists of all the fixtures that have changed results in the last 24 hours.
+  Get a lists of all the fixtures that have changed results.
+
+  Same optional `filters` as `fixture_changes/3`.
   """
-  def result_changes(lang \\ "en", opts \\ []) do
-    # TO-DO: add support for 'after datetime' and 'sport' filters
+  def result_changes(lang \\ "en", filters \\ [], opts \\ []) do
     endpoint = ["sports", lang, "results", "changes.xml"]
 
-    HTTP.get(endpoint, [], opts)
+    HTTP.get(endpoint, changes_params(filters), opts)
+  end
+
+  defp changes_params(filters) do
+    Enum.map(filters, fn
+      {:after, %mod{} = datetime} when mod in [DateTime, NaiveDateTime] ->
+        {:after, mod.to_iso8601(datetime)}
+
+      {key, value} when key in [:after, :sport] ->
+        {key, value}
+    end)
   end
 
   ## Sport Event Information
