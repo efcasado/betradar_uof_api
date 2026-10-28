@@ -11,6 +11,20 @@
 * document usage of conventional commits ([6de2680](https://github.com/efcasado/uof_api/commit/6de2680f03382813fd13c9cf078062c4c43b5aaf))
 * remove logo ([3904612](https://github.com/efcasado/uof_api/commit/3904612b8d5850b0d337b8d221423e2319e99a4a))
 
+## [3.0.3](https://github.com/efcasado/betradar_uof_api/compare/v3.0.2...v3.0.3) (2026-10-28)
+
+
+### Dependencies
+
+* bump req from 0.7.4 to 0.7.5 ([#88](https://github.com/efcasado/betradar_uof_api/issues/88)) ([489a98f](https://github.com/efcasado/betradar_uof_api/commit/489a98fd653a281c41d35d640c646d24f328f191))
+* bump uof_schemas from 0.3.1 to 0.3.2 ([#93](https://github.com/efcasado/betradar_uof_api/issues/93)) ([cf55b7e](https://github.com/efcasado/betradar_uof_api/commit/cf55b7e2f9bb35bf528ef86388d7e51d0d6ee467))
+* **ci:** bump dorny/test-reporter from 3.0.0 to 3.2.0 ([#86](https://github.com/efcasado/betradar_uof_api/issues/86)) ([4802cd6](https://github.com/efcasado/betradar_uof_api/commit/4802cd61df77f379af4c7ba2daf9e3cfb7f948d6))
+* **ci:** bump jdx/mise-action from 4.3.0 to 5.0.0 ([#83](https://github.com/efcasado/betradar_uof_api/issues/83)) ([a83edb2](https://github.com/efcasado/betradar_uof_api/commit/a83edb21c9ce2432f7236c2380cd0bad72a0cf92))
+* **ci:** bump jdx/mise-action from 5.0.0 to 5.1.1 ([#87](https://github.com/efcasado/betradar_uof_api/issues/87)) ([afc33e8](https://github.com/efcasado/betradar_uof_api/commit/afc33e8d626a768e758c2e3c3a33bae7358cb8b0))
+* **ci:** bump jdx/mise-action from 5.1.1 to 5.1.2 ([#89](https://github.com/efcasado/betradar_uof_api/issues/89)) ([15cd850](https://github.com/efcasado/betradar_uof_api/commit/15cd850c3b7b6c9dab1d0d25e2de67c8f7f2cdc8))
+* **ci:** bump jdx/mise-action from 5.1.2 to 5.2.0 ([#90](https://github.com/efcasado/betradar_uof_api/issues/90)) ([abf3b0c](https://github.com/efcasado/betradar_uof_api/commit/abf3b0cdb3d547516760700cc9a5af719517740c))
+* **ci:** bump jdx/mise-action from 5.2.0 to 5.2.1 ([#91](https://github.com/efcasado/betradar_uof_api/issues/91)) ([1b3ce9c](https://github.com/efcasado/betradar_uof_api/commit/1b3ce9c20aeffe2bb2f0b07b3c79b06d124fc221))
+
 ## [3.0.2](https://github.com/efcasado/betradar_uof_api/compare/v3.0.1...v3.0.2) (2026-09-28)
 
 
