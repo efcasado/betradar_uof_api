@@ -24,6 +24,6 @@
   "saxy": {:hex, :saxy, "1.7.0", "61802f6e0e38ff4e6f29750018b95fe22f977bd989c446f9058c816684b23b87", [:mix], [], "hexpm", "a25acd81a6112828a3d190f568e9f716f6334eeba22ac3abc50bbb851fac91e2"},
   "styler": {:hex, :styler, "1.12.2", "1aa2942295645df48d42365f7191cc8b9f6fc4c35d15491f6fbd80ee815256b0", [:mix], [], "hexpm", "a82baeb6d81e35ee1c4cf8af08e141e8d7872a1d442f6fefce29817869e77a01"},
   "telemetry": {:hex, :telemetry, "1.4.2", "a0cb522801dffb1c49fe6e30561badffc7b6d0e180db1300df759faa22062855", [:rebar3], [], "hexpm", "928f6495066506077862c0d1646609eed891a4326bee3126ba54b60af61febb1"},
-  "uof_schemas": {:hex, :uof_schemas, "0.3.3", "edd63b1846e1329949162ecea9b0ea399c032a06ed14dbe235b03d55ed752163", [:mix], [{:ecto, "~> 3.12", [hex: :ecto, repo: "hexpm", optional: false]}, {:saxy, "~> 1.5", [hex: :saxy, repo: "hexpm", optional: false]}], "hexpm", "23c90762fdec74a6bab011a6c4681f1d57f50d6aad85dd3a6f988d093652d116"},
+  "uof_schemas": {:hex, :uof_schemas, "0.3.4", "60d7224e75ea0d30caf8d8d1b48566fbb217778f02989effe1892ca83ef4010a", [:mix], [{:ecto, "~> 3.12", [hex: :ecto, repo: "hexpm", optional: false]}, {:saxy, "~> 1.5", [hex: :saxy, repo: "hexpm", optional: false]}], "hexpm", "2b427d29cd4bd8abfffc7cf9ecd2e4ec45a247b8b61e926284305687ed2adce2"},
   "xml_builder": {:hex, :xml_builder, "2.4.1", "6f3c00f3651a87a1ec97c9889889137f14fec38bd592e7a2a96f839166be9544", [:mix], [], "hexpm", "1b9a1146feb1e6c94e29d8acad0c8e7bf7d6df0ec68eb8c3501e47708da9eb00"},
 }
