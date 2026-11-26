@@ -11,6 +11,15 @@
 * document usage of conventional commits ([6de2680](https://github.com/efcasado/uof_api/commit/6de2680f03382813fd13c9cf078062c4c43b5aaf))
 * remove logo ([3904612](https://github.com/efcasado/uof_api/commit/3904612b8d5850b0d337b8d221423e2319e99a4a))
 
+## [3.0.4](https://github.com/efcasado/betradar_uof_api/compare/v3.0.3...v3.0.4) (2026-11-26)
+
+
+### Dependencies
+
+* bump ex_doc from 0.40.4 to 0.40.5 ([#106](https://github.com/efcasado/betradar_uof_api/issues/106)) ([c84b1df](https://github.com/efcasado/betradar_uof_api/commit/c84b1df78f77c63d512ed16ec0424ad446d86475))
+* **ci:** bump jdx/mise-action from 5.2.8 to 5.2.9 ([#103](https://github.com/efcasado/betradar_uof_api/issues/103)) ([16f6f59](https://github.com/efcasado/betradar_uof_api/commit/16f6f59e210f3d8f746bc5bf021283ed6707db04))
+* **ci:** bump jdx/mise-action from 5.2.9 to 5.2.10 ([#105](https://github.com/efcasado/betradar_uof_api/issues/105)) ([8e420d4](https://github.com/efcasado/betradar_uof_api/commit/8e420d4a19ff2b760ee1c271ca2218fca77c8f97))
+
 ## [3.0.3](https://github.com/efcasado/betradar_uof_api/compare/v3.0.2...v3.0.3) (2026-11-16)
 
 
